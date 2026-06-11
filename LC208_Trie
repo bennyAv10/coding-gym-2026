@@ -1,3 +1,21 @@
+"""
+Approach: Each node has upto 26 (lower case letters) children. Each node has a boolean signaling if it's a word ending here.
+insert - keepi going down in the tree adding nodes as needed for each of the word letters. marking is_word as tru for the last one
+search- go therough the tree according to the given word letters and return true is last letter is amrked as word
+startwith - just has the prefix
+Alternative: 
+1. also has a dictionary for searching W in O(1) at the price of doubling storage
+2. only use a dictionary - event for prefixes - but the question explicitly asks for a prefix **tree*
+ - not stating invariant here - I don't think it's as rlevant here
+
+Time: init - O(1) inserts\search\startWith - O(len(word\prefix))
+Space: O(N*L) N = words L=max word length
+
+Edge Cases:
+word exist in the tree but on ly as a dictionary
+inserting the very first word
+inserting word when prefix exist and not exist
+"""
 
 from dataclasses import dataclass
 
