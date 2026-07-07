@@ -1,0 +1,47 @@
+"""
+the optimization is shoot as many baloons with any arrow as possible --> overlapping ones
+Approach: sort intervals by start. iterate and keep track of the min end. stop where the next start is beyound min end.
+when finish iterating, shoot another one for the last interval
+Invariant: befre processing ith interval in the sorted list. we correctly have the arrows count for the past intervals
+and we might have a bunch of overlapping invervals for which we know the min end
+Preservation: processing the next interval - if it's start>min end it doesn't overlap with that interval and we must shoot an arrow separately.
+otherwise, the ith interval starts the same or after all other intervals and end with or before min end --> it's overlapping to all other intervals
+Consequence: base case holds the invariant. when finishing we have at least one interval, so we shooudl add one arrow
+Time: O(NlogN) for sorting. rest is linear
+Space: O(1) assuming sorting in place
+"""
+class Solution:
+    def findMinArrowShots(self, points: List[List[int]]) -> int:
+        """returns the min number of arrows required to shot all the balloons.
+        """
+        points.sort()
+        arrows_count=0
+        min_end = points[0][1]
+        for i in range(len(points)):
+            if points[i][0] > min_end:
+                arrows_count+=1
+                min_end = points[i][1]
+            else:
+                min_end=min(min_end, points[i][1])
+
+        return arrows_count+1
+
+"""
+test
+
+points = [[10,16],[2,8],[1,6],[7,12]]
+sorted = points = [1,6],[2,8],[7,12],[10,16],,[,]
+min=6
+1,6
+    min=6
+2,8
+7,12
+    arrows=1
+    min=12
+10,16
+arrows+=1
+
+adverserial = 1 point, all points are overlapping
+completed in 18 minutes
+"""
+        
