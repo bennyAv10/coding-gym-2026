@@ -1,0 +1,44 @@
+"""
+approach 1: backtracking - example 1 for i=2 you have either 10, 1 or 0, 0. time: 2^N you either take each one or not. stop condition if you either  too much, or completed the list 
+with too little (return false) or you have the exact amount
+state complexity: simple - recursion with remaining amount and and coin count
+
+approach 2: dp if getting to i with the same amount already failed - it doesn't really same in order of magnitude but add complexity, so will skip it
+
+in 18 minutes i realized i didn't take into account the ability to take unlimited times of each coin - meaning in bt you can take O(amoount) times or 0 from each coin (if it's 1)
+adjusted approach greedy (partially from far memory). sort the coins in descening order. If when the remaining amoung is lower than current coin move to the next coin
+if done the coins list without the exact amount -1
+
+example 1 works
+example 2 works (take 2 once, remain 1 whihc is < 2 and you done with the coins list)
+example 3 works
+
+counter
+
+10, 7, 5 - amount 15 - 
+
+I think we should do backtracking but with every coin take as much as possible after sorting
+
+
+"""
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        def bt(coins: int, remaining_amount: int, index: int):
+            """ Returns number of coins for the give amount starting at i or -1 if not found
+            """
+            if remaining_amount == 0:
+                return coins
+            
+            if remaining_amount < 0 or index == len(coins):
+                return -1
+            
+            # can we get the remaining amount if we use the current coin
+
+            coins_or_failure =  bt(coins+1, remaining_amount-coins[index], index+1)
+
+            if coins_or_failure >=0:
+                return coins_or_failure
+            
+        
+        return bt(coins, remaning_amount, index+1)
+        
