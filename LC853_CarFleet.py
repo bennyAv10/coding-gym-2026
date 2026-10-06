@@ -1,4 +1,5 @@
 """
+take 1: 10/6/2026 - 26 minutes
 convert to pairs (position, speed) and sort in decending order.
 iterate and for each i the next cars can only come later but not earlier
 i.e. a car started at a lower position can only arrive after any car started
