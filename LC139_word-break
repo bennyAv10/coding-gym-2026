@@ -1,0 +1,67 @@
+"""
+option 1 recursion:
+put the wordDict into a dict and start iterating through s for each c if since finishing last word until here there is a new word
+so for  i we can eitehr continue or split so it's 2^200
+
+but then you can do dp
+
+so, put words in dict
+
+dp which is tree states in the length of s:
+-1: can't build from dict starting with s[i]
+0: unknown
+1: can build
+
+you start from 0: you walk over the trie. when word is finish you can either start next i or continue with the current word
+"""
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        dp = [0] * len(s)
+        wordsSet = set(wordDict)
+
+        def dp_visit(start: int, current: int) -> bool:
+            if current == len(s):
+                    return start == len(s)
+            if dp[start] == -1:
+                return False
+            elif dp[start] == 1:
+                return True
+            else:
+                dict_built = False
+                if s[start:current+1] in wordsSet:
+                    dict_built = dp_visit(start=current+1, current=current+1)
+
+                dict_built |= dp_visit(start=start, current=current+1)
+
+                dp[start] = 1 if dict_built else -1
+
+                return dict_built
+        
+        return dp_visit(start=0, current=0)
+
+"""
+"neetcode", wordDict = ["neet","code"]
+
+dp=[0,0,0,0,0,0,0, 0]
+
+0,0
+    0,1
+        0,2
+            0,3
+                4,4
+                    4,5
+                        4,6
+                            4,7
+                                8,8 --> True
+                                dp[8]=true
+                            
+finished in 27 minutes
+
+1 bug: initially i put
+if current == len(s):
+                    return start == len(s)
+after referring to dp[start]
+"""
+
+        
+        
