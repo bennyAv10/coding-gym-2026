@@ -1,0 +1,80 @@
+
+"""
+take 1: 10/20
+approach: Recursion/ backtracking. you start with i and visit for index within the digits str. then you fork the string for each of teh letters mapped from the current digit.
+you stopand add to the results
+Time: at each string index you multiply by l (letters mapped from a digit: 3-4). assuming len(digits)=n l^n. with l=4 and n<=4 4^4 = 256
+space: what's needed for the response + depth stack == len digits
+invariant: at any bt visit we have the current variant for choosing particular letters for each digit. with mapping all options of the current digit and calling for each for the next index we map all the options
+
+edge cases:
+empty
+"""
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+        """ Returns all possible combination of letters mapped from a phone pad digits
+        """
+        d2l = {
+            "2": "abc",
+            "3": "def",
+            "4": "ghi",
+            "5": "jkl",
+            "6": "mno",
+            "7": "pqrs",
+            "8": "tuv",
+            "9": "wxyz"
+        }
+        res = []
+
+        def bt_visit(prefix: str, index: int) -> None:
+            if index == len(digits):
+                res.append(prefix)
+                return
+
+            digit = digits[index]
+            letters = d2l[digit]
+
+            for l in letters:
+                bt_visit(prefix=prefix+l, index=index+1)
+
+        if not digits: return []
+
+        bt_visit(prefix="", index=0)
+
+        return res
+
+
+"""
+digits = "34"
+
+0 - p=""
+    ls = "def"
+        "d" 1
+            ls = "ghi"
+            "dg" 2
+            "dh" 2
+            "di" 2
+        "e" 1
+            ls = "ghi"
+            "eg"
+            eh
+            ei
+        "f" 1
+            "ls = ghi"
+            fg
+            fh
+            fi
+
+bug 1 at run
+digit = digits[index] out of range
+cause: forgot return after the if above
+
+bug 2: empty digits return list with empty string
+
+time: 25 minutes
+"""
+            
+
+            
+
+        
