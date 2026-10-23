@@ -1,0 +1,76 @@
+"""
+first to track time (Or relative time), we'll have ops_counter
+each posted tweet is posted with 
+
+in order to account for user unfollowign everyone else, then newsfeed will be their own most recent 10, we should always keep latest 10
+with getNewsFeed, you need to go through all followed and pick most recent 10
+
+Approach:
+ each user has followedIds and tweetIds
+ post tweet - adding at head if bigger than 10 remove tail O(1)
+ follow/unfollow - simple O(1)
+ get newsfeed (get the min from all followed users)
+
+"""
+
+from dataclasses import dataclass, field
+from collections import deque, defaultdict
+
+@dataclass
+class User:
+    followedIds: set[int] = field(default_factory=set)
+    tweetIds: deque = field(default_factory=deque)
+
+class Twitter:
+
+    def __init__(self):
+        self._users = defaultdict(User) # userId --> User
+        self._ops_tick = 0
+        self._feed_len = 10
+        
+
+    def postTweet(self, userId: int, tweetId: int) -> None:        
+        self._users[userId].tweetIds.appendleft((self._ops_tick, tweetId))
+        self._ops_tick+=1
+
+        if len(self._users[userId].tweetIds) >self._feed_len:
+            self._users[userId].tweetIds.pop()        
+
+    def getNewsFeed(self, userId: int) -> List[int]:
+        feed = []
+        
+        followedIds = self._users[userId].followedIds
+        followedIndices = defaultdict(int)
+
+        for i in range(self._feed_len):
+            max_tick = -1
+            min_userId = None
+            for followedId in followedIds | {userId}:
+                index = followedIndices[followedId]
+                if index >= len(self._users[followedId].tweetIds):
+                    continue
+                (current_tick, _) = self._users[followedId].tweetIds[followedIndices[followedId]]
+                if current_tick > max_tick:
+                    max_tick = current_tick
+                    min_userId = followedId
+            
+            if min_userId != None:
+                user = self._users[min_userId]
+                index = followedIndices[min_userId]
+                _, tweet = self._users[min_userId].tweetIds[index]
+
+                feed.append(tweet)
+                followedIndices[min_userId]+=1
+        return feed
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        self._users[followerId].followedIds.add(followeeId)
+        
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        self._users[followerId].followedIds.discard(followeeId)
+        
+"""
+40 minutes without testing, so testing by run
+
+after testing and multiple fies it took me 60 minutes
+"""
